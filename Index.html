@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Invest.com</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #fdf2c4; margin:0; padding:0; }
+    header { background: #d2b459; padding: 15px; display:flex; justify-content: space-around; font-weight: bold; }
+    header a { text-decoration: none; color: black; }
+    main { padding: 20px; }
+    label { display:block; margin-top: 10px; }
+    input, select { padding: 5px; margin-top: 5px; }
+    button { margin-top: 15px; padding: 10px; cursor: pointer; background: #d2b459; border: none; border-radius: 5px; }
+    .resultado { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="Index.html">Home</a>
+    <a href="Bolsas.html">Bolsas</a>
+    <a href="Estatísticas.html">Estatísticas</a>
+  </header>
+
+  <main>
+    <h1>Simulador de Investimentos</h1>
+    <p>Selecione a ação e preencha os dados:</p>
+
+    <label>Nome da Ação:</label>
+    <select id="acao">
+      <option value="PETR4">PETR4</option>
+      <option value="VALE3">VALE3</option>
+      <option value="ITUB4">ITUB4</option>
+      <option value="BBDC4">BBDC4</option>
+      <option value="OUTRA">Outras</option>
+    </select>
+
+    <label>Número de Cotas:</label>
+    <input type="number" id="cotas">
+
+    <label>Valor da Cota (R$):</label>
+    <input type="number" id="valorCota">
+
+    <label>DY (% ao ano):</label>
+    <input type="number" id="dy">
+
+    <button onclick="calcular()">Calcular</button>
+    <button onclick="salvar()">Salvar Investimento</button>
+
+    <div class="resultado" id="resultado"></div>
+  </main>
+
+  <script>
+    let investimentos = JSON.parse(localStorage.getItem("investimentos")) || [];
+
+    function calcular() {
+      const acao = document.getElementById('acao').value;
+      const cotas = parseFloat(document.getElementById('cotas').value) || 0;
+      const valorCota = parseFloat(document.getElementById('valorCota').value) || 0;
+      const dy = parseFloat(document.getElementById('dy').value) || 0;
+
+      const totalInvestido = cotas * valorCota;
+      const rendaAnual = totalInvestido * (dy / 100);
+      const rendaMensal = rendaAnual / 12;
+      const rendaPorCota = (valorCota * (dy / 100)) / 12;
+      const magicNumber = rendaPorCota > 0 ? Math.ceil(valorCota / rendaPorCota) : 0;
+
+      document.getElementById('resultado').innerHTML = `
+        Ação: ${acao}<br>
+        Valor total investido: R$ ${totalInvestido.toFixed(2)}<br>
+        Renda Mensal: R$ ${rendaMensal.toFixed(2)}<br>
+        Renda Anual: R$ ${rendaAnual.toFixed(2)}<br>
+        Magic Number (cotas p/ comprar 1 nova): ${magicNumber}
+      `;
+
+      return {acao, cotas, valorCota, dy, totalInvestido, rendaMensal, rendaAnual, magicNumber};
+    }
+
+    function salvar() {
+      const investimento = calcular();
+      investimentos.push(investimento);
+      localStorage.setItem("investimentos", JSON.stringify(investimentos));
+      alert("Investimento salvo!");
+    }
+  </script>
+</body>
+
+<!-- Rodapé / Contato -->
+<footer style="background-color:#111; color:#fff; text-align:center; padding:20px; margin-top:40px;">
+    <h3>Contato</h3>
+    <p>Email: <a href="luizconmz@gmail.com" style="color:#4CAF50;">luizconmz@gmail.com</a></p>
+    <p>WhatsApp: <a href="https://wa.me/559885785932" target="_blank" style="color:#4CAF50;">(55+) 98 8578-5932</a></p>
+    <p>© 2025 - Meu Site de Investimentos</p>
+</footer>
+
+
+</html>

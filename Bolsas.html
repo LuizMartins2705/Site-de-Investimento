@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Invest.com - Bolsas</title>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #fdf2c4; margin:0; padding:0; }
+    header { background: #d2b459; padding: 15px; display:flex; justify-content: space-around; font-weight: bold; }
+    header a { text-decoration: none; color: black; }
+    main { padding: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+    th { background: #d2b459; }
+    button { padding: 5px 10px; margin: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="Index.html">Home</a>
+    <a href="bolsas.html">Bolsas</a>
+    <a href="Estatísticas.html">Estatísticas</a>
+  </header>
+
+  <main>
+    <h1>Meus Investimentos</h1>
+    <p>Aqui estão os investimentos que você salvou:</p>
+
+    <table id="tabelaInvestimentos">
+      <thead>
+        <tr>
+          <th>Ação</th>
+          <th>Cotas</th>
+          <th>Valor da Cota (R$)</th>
+          <th>Total Investido (R$)</th>
+          <th>Renda Mensal (R$)</th>
+          <th>Renda Anual (R$)</th>
+          <th>Magic Number</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <script>
+    function carregarInvestimentos() {
+      let investimentos = JSON.parse(localStorage.getItem("investimentos")) || [];
+      let tbody = document.querySelector("#tabelaInvestimentos tbody");
+      tbody.innerHTML = "";
+
+      investimentos.forEach((inv, index) => {
+        let row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${inv.acao}</td>
+          <td>${inv.cotas}</td>
+          <td>R$ ${inv.valorCota.toFixed(2)}</td>
+          <td>R$ ${inv.totalInvestido.toFixed(2)}</td>
+          <td>R$ ${inv.rendaMensal.toFixed(2)}</td>
+          <td>R$ ${inv.rendaAnual.toFixed(2)}</td>
+          <td>${inv.magicNumber}</td>
+          <td>
+            <button onclick="remover(${index})">Remover</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function remover(index) {
+      let investimentos = JSON.parse(localStorage.getItem("investimentos")) || [];
+      investimentos.splice(index, 1);
+      localStorage.setItem("investimentos", JSON.stringify(investimentos));
+      carregarInvestimentos();
+    }
+
+    // carregar ao abrir a página
+    carregarInvestimentos();
+  </script>
+</body>
+</html>
